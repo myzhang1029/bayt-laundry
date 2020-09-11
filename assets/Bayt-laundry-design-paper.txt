@@ -1,0 +1,23 @@
+Basic usage:
+1.Login: Get WeChat info -> Store
+2.Get info: Room number, Laundry Room: Girl or Boy -> Store with login
+3.Select machine and set timing or ask someone to take -> Store with machine number
+4.Settings: Notification, Room number
+
+Views:
+1.Index page (index.wxml):
+Optional, if not logged in, we ask for that, if not set up, we set up.
+2.Settings (alterSettings.wxml):
+Room number and laundry room selection:
+Possible animation:
+(1)What room are you in?+input field+OK button
+(2)I guess you use the girl/boys' laundry room, correct?+ Yes! Button+ No, I use the boy/girls' laundry room. Button
+(3)All set!
+3.Machine selection (controlMachine.wxml):
+Map of the room, machines clickable.
+4.Machine view (controlMachine.wxml popup):
+(1)X is using this machine, scheduled finish time is X
+Button: Ask him/her to take the clothes
+(2)I want to use this machine until <input>
+Checkbox: Please remind me to take the clothes
+Button: Done
