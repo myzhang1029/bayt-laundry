@@ -1,7 +1,7 @@
 {
   "pages": [
-    "pages/index/index",
     "pages/alterSettings/alterSettings",
+    "pages/index/index",
     "pages/controlMachine/controlMachine"
   ],
   "window": {
@@ -12,5 +12,8 @@
     "navigationBarTextStyle": "black"
   },
   "sitemapLocation": "sitemap.json",
-  "style": "v2"
+  "style": "v2",
+  "useExtendedLib": {
+    "weui": true
+  }
 }

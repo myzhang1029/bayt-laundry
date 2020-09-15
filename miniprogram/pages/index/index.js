@@ -5,7 +5,8 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    title: "Welcome to\nBayt Laundry Manager!",
+    subtitle: "Get notified when your laundry is done or someone else is willing to use the machine!"
   },
 
   /**
@@ -26,7 +27,19 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    var that = this;
+    wx.login({
+      success(res) {
+        if (res.code) {
+          console.log(res);
+        } else {
+          console.log('登录失败！' + res.errMsg);
+          that.setData({
+            title: "Failed to login!"
+          });
+        }
+      }
+    });
   },
 
   /**

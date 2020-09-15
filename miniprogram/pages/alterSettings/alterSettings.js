@@ -5,7 +5,40 @@ Page({
    * 页面的初始数据
    */
   data: {
+    showTopTips: false,
+    checkboxItems: [
+      {
+        name: 'Notification when my laundry is done.',
+        value: '0',
+        checked: true
+      }, {
+        name: 'Notification when you might use a washing machine (feature in progress).',
+        value: '1',
+        checked: true
+      }
+    ],
+    formData: {
 
+    },
+    rules: [{
+      name: 'username',
+      rules: [{
+        required: true,
+        message: 'Name is required.'
+      }]
+    }, {
+      name: 'roomnumber',
+      rules: [{
+        required: true,
+        message: 'Room number is required.'
+      }, {
+        minlength: 4,
+        message: 'Room number is invalid.'
+      }, {
+        maxlength: 4,
+        message: 'Room number is invalid.'
+      }]
+    }]
   },
 
   /**
@@ -62,5 +95,61 @@ Page({
    */
   onShareAppMessage: function () {
 
+  },
+
+  checkboxChange: function (e) {
+    console.log('checkbox changed to: ', e.detail.value);
+
+    var checkboxItems = this.data.checkboxItems, values = e.detail.value;
+    for (var i = 0, lenI = checkboxItems.length; i < lenI; ++i) {
+      checkboxItems[i].checked = false;
+
+      for (var j = 0, lenJ = values.length; j < lenJ; ++j) {
+        if (checkboxItems[i].value == values[j]) {
+          checkboxItems[i].checked = true;
+          break;
+        }
+      }
+    }
+
+    this.setData({
+      checkboxItems: checkboxItems,
+      [`formData.checkbox`]: e.detail.value
+    });
+  },
+
+  formInputChange(e) {
+    const {
+      field
+    } = e.currentTarget.dataset;
+    this.setData({
+      [`formData.${field}`]: e.detail.value
+    });
+  },
+
+  submitForm: function () {
+    this.selectComponent('#form').validate((valid, errors) => {
+      console.log('valid', valid, errors);
+      if (!valid) {
+        const firstError = Object.keys(errors);
+        if (firstError.length) {
+          this.setData({
+            error: errors[firstError[0]].message
+          });
+        }
+      } else {
+        // TODO: Send this to cloud, assoc w/ openid
+        console.log({
+          username: this.data.formData.username,
+          roomnumber: this.data.formData.roomnumber,
+          notify1: this.data.checkboxItems[0].checked,
+          notify2: this.data.checkboxItems[1].checked
+        });
+        // Goto control page
+        wx.navigateTo({
+          url: "/pages/controlMachine/controlMachine"
+        });
+      }
+    });
   }
-})
+});

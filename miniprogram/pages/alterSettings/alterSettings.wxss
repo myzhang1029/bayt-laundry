@@ -1,1 +1,4 @@
 /* miniprogram/pages/alterSettings/alterSettings.wxss */
+.error {
+  color: red;
+}
