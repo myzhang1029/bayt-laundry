@@ -5,7 +5,6 @@ Page({
    * 页面的初始数据
    */
   data: {
-    showTopTips: false,
     checkboxItems: [
       {
         name: 'Notification when my laundry is done.',
@@ -98,7 +97,7 @@ Page({
   },
 
   checkboxChange: function (e) {
-    console.log('checkbox changed to: ', e.detail.value);
+    console.log('Checkbox changed to: ', e.detail.value);
 
     var checkboxItems = this.data.checkboxItems, values = e.detail.value;
     for (var i = 0, lenI = checkboxItems.length; i < lenI; ++i) {
@@ -129,7 +128,7 @@ Page({
 
   submitForm: function () {
     this.selectComponent('#form').validate((valid, errors) => {
-      console.log('valid', valid, errors);
+      console.log('Form validity is', valid, errors);
       if (!valid) {
         const firstError = Object.keys(errors);
         if (firstError.length) {
@@ -139,15 +138,29 @@ Page({
         }
       } else {
         // TODO: Send this to cloud, assoc w/ openid
-        console.log({
-          username: this.data.formData.username,
-          roomnumber: this.data.formData.roomnumber,
-          notify1: this.data.checkboxItems[0].checked,
-          notify2: this.data.checkboxItems[1].checked
-        });
-        // Goto control page
-        wx.navigateTo({
-          url: "/pages/controlMachine/controlMachine"
+        wx.cloud.callFunction({
+          name: "register",
+          data: {
+            username: this.data.formData.username,
+            roomnumber: this.data.formData.roomnumber,
+            notify1: this.data.checkboxItems[0].checked,
+            notify2: this.data.checkboxItems[1].checked
+          },
+          success: (resp) => {
+            console.log("Register succeeded:");
+            console.log(resp);
+            // Goto control page
+            wx.navigateTo({
+              url: "/pages/controlMachine/controlMachine"
+            });
+          },
+          fail: (resp) => {
+            console.log("Register failed:");
+            console.log(resp);
+            this.setData({
+              error: "Register failed! Please try again!"
+            });
+          }
         });
       }
     });

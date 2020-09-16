@@ -1,45 +1,44 @@
 <!--miniprogram/pages/alterSettings/alterSettings.wxml-->
 
-<mp-toptips msg="{{error}}" type="error" show="{{error}}"></mp-toptips>
-<view class="page" xmlns:wx="http://www.w3.org/1999/xhtml">
-	<view class="page__hd">
-		<view class="page__title">Settings</view>
-	</view>
+<mp-toptips msg="{{error}}" type="error" show="{{error}}" />
+<mp-form-page title="Settings" subtitle="Almost there!">
 	<view class="page__bd">
 		<mp-form id="form" rules="{{rules}}" models="{{formData}}">
 			<mp-cells title="Things about you" footer="Everything will only be visible to house members.">
 				<view class="weui-cells__title">What is your name? *</view>
 				<mp-cell prop="user_name" title="Name" ext-class="">
-					<input bindinput="formInputChange" data-field="username" class="weui-input" placeholder="Ben George" />
+					<input
+					 bindinput="formInputChange"
+					 data-field="username"
+					 class="weui-input"
+					 placeholder="Ben George"
+					/>
 				</mp-cell>
 				<view class="weui-cells__title">What is your room number? *</view>
 				<mp-cell prop="room_number" title="Room" ext-class="">
-					<input bindinput="formInputChange" data-field="roomnumber" class="weui-input" placeholder="C415" />
+					<input
+					 bindinput="formInputChange"
+					 data-field="roomnumber"
+					 class="weui-input"
+					 placeholder="C415"
+					/>
 				</mp-cell>
 			</mp-cells>
-			<!--view class="weui-cells__title">Options</view>
-			<view class="weui-cells weui-cells_after-title">
-				<view class="weui-cell weui-cell_switch">
-					<view class="weui-cell__bd">Notification when my laundry is done</view>
-					<view class="weui-cell__ft">
-						<switch checked />
-					</view>
-				</view>
-				<view class="weui-cell weui-cell_switch">
-					<view class="weui-cell__bd">Notification when you might use a washing machine (in progress)</view>
-					<view class="weui-cell__ft">
-						<switch checked />
-					</view>
-				</view>
-			</view-->
-            <mp-cells title="Options">
-                <mp-checkbox-group prop="checkbox" multi="{{true}}" bindchange="checkboxChange">
-                    <mp-checkbox wx:for="{{checkboxItems}}" wx:key="value" label="{{item.name}}" value="{{item.value}}" checked="{{item.checked}}"></mp-checkbox>
-                </mp-checkbox-group>
-            </mp-cells>
+			<mp-cells title="Options">
+				<mp-checkbox-group prop="checkbox" multi="{{true}}" bindchange="checkboxChange">
+					<mp-checkbox
+					 wx:for="{{checkboxItems}}"
+					 wx:key="value"
+					 label="{{item.name}}"
+					 value="{{item.value}}"
+					 checked="{{item.checked}}"
+					/>
+				</mp-checkbox-group>
+			</mp-cells>
 			<view class="weui-btn-area">
 				<button class="weui-btn" type="primary" bindtap="submitForm">Looks good!</button>
 			</view>
 		</mp-form>
 	</view>
-</view>
+</mp-form-page>
+

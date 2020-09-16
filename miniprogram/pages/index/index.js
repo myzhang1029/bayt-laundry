@@ -27,14 +27,13 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    var that = this;
     wx.login({
-      success(res) {
+      success: (res) => {
         if (res.code) {
           console.log(res);
         } else {
-          console.log('登录失败！' + res.errMsg);
-          that.setData({
+          console.log('Login failed: ' + res.errMsg);
+          this.setData({
             title: "Failed to login!"
           });
         }
