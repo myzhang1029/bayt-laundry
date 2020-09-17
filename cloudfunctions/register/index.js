@@ -8,8 +8,8 @@ exports.main = async (event, context) => {
   const openid = userInfo.OPENID;
   /* The record to be creaed/updated */
   const dbData = {
-    name: event.username,
-    roomNumber: event.roomnumber,
+    userName: event.userName,
+    roomNumber: event.roomNumber,
     notify1: event.notify1,
     notify2: event.notify2
   };

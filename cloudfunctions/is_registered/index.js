@@ -16,12 +16,14 @@ exports.main = async (event, context) => {
       throw e;
     }
   }
-  const count = await db.collection("users").where({
+  const lkup = db.collection("users").where({
     _id: openid
-  }).count();
+  });
+  const count = await lkup.count();
   if (count.total == 0) {
     return false;
   } else {
-    return true;
+    const datas = await lkup.get();
+    return datas.data[0];
   }
 }
