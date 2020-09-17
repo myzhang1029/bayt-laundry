@@ -1,0 +1,14 @@
+{
+  "name": "is_registered",
+  "version": "1.0.0",
+  "description": "Determine whether a user is registered.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "wx-server-sdk": "~2.2.0"
+  }
+}

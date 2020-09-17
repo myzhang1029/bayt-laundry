@@ -1,13 +1,19 @@
 <!-- miniprogram/pages/index/index.wxml -->
+
+<mp-toptips msg="{{error}}" type="error" show="{{error}}" />
 <view class="container">
-    <mp-form-page title="{{title}}" subtitle="{{subtitle}}">
-        <mp-form id="form" rules="{{rules}}" models="{{formData}}" />
-        <view slot="button">
-            <navigator url="../alterSettings/alterSettings" open-type="navigate" class="goto-alter-settings">
-                <button class="weui-btn" type="primary" bindtap="submitForm">
-                    Set up and GO!
-                </button>
-            </navigator>
-        </view>
-    </mp-form-page>
+	<mp-form-page title="{{title}}" subtitle="{{subtitle}}">
+		<mp-form id="form" rules="{{rules}}" models="{{formData}}" />
+		<mp-cells ext-class="" title="">
+			<mp-cell value="Please wait..." wx:if="{{showWait}}" />
+		</mp-cells>
+		<view slot="button" wx:if="{{!showWait}}">
+			<navigator url="../alterSettings/alterSettings" open-type="navigate" class="goto-alter-settings">
+				<button class="weui-btn" type="primary" bindtap="submitForm">
+					Set up and GO!
+				</button>
+			</navigator>
+		</view>
+	</mp-form-page>
 </view>
+

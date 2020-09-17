@@ -6,13 +6,6 @@ cloud.init({
 exports.main = async (event, context) => {
   const userInfo = cloud.getWXContext();
   const openid = userInfo.OPENID;
-  /* The record to be creaed/updated */
-  const dbData = {
-    name: event.username,
-    roomNumber: event.roomnumber,
-    notify1: event.notify1,
-    notify2: event.notify2
-  };
   const db = cloud.database();
   /* Ensure the collection exists */
   try {
@@ -23,9 +16,12 @@ exports.main = async (event, context) => {
       throw e;
     }
   }
-  /* This code works for both creation and update */
-  await db.collection("users").doc(openid).set({
-    data: dbData
-  });
-  return true;
+  const count = await db.collection("users").where({
+    _id: openid
+  }).count();
+  if (count.total == 0) {
+    return false;
+  } else {
+    return true;
+  }
 }

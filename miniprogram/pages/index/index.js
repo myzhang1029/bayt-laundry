@@ -6,13 +6,53 @@ Page({
    */
   data: {
     title: "Welcome to\nBayt Laundry Manager!",
-    subtitle: "Get notified when your laundry is done or someone else is willing to use the machine!"
+    subtitle: "Get notified when your laundry is done or someone else is willing to use the machine!",
+    showWait: true
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.login({
+      success: res => {
+        if (res.code) {
+          console.log(res);
+        } else {
+          console.log('Login failed: ' + res.errMsg);
+          this.setData({
+            error: "Failed to login! Please restart program or contact developer."
+          });
+        }
+      }
+    });
+    wx.cloud.callFunction({
+      name: "is_registered",
+      data: {},
+      success: resp => {
+        console.log("is_register returned:");
+        console.log(resp);
+        if (resp.result) {
+          /* Goto control page */
+          wx.navigateTo({
+            url: "/pages/controlMachine/controlMachine"
+          });
+        } else {
+          console.log("enter");
+          /* Wait for user to click register */
+          this.setData({
+            showWait: false
+          })
+        }
+      },
+      fail: resp => {
+        console.log("is_registered failed:");
+        console.log(resp);
+        this.setData({
+          error: "Something unexpected happened! Please try again!"
+        });
+      }
+    });
 
   },
 
@@ -27,18 +67,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    wx.login({
-      success: res => {
-        if (res.code) {
-          console.log(res);
-        } else {
-          console.log('Login failed: ' + res.errMsg);
-          this.setData({
-            title: "Failed to login!"
-          });
-        }
-      }
-    });
+
   },
 
   /**
