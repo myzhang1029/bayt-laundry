@@ -7,12 +7,10 @@
 		<mp-cells ext-class="" title="">
 			<mp-cell value="Please wait..." wx:if="{{showWait}}" />
 		</mp-cells>
-		<view slot="button" wx:if="{{!showWait}}">
-			<navigator url="../alterSettings/alterSettings" open-type="navigate" class="goto-alter-settings">
-				<button class="weui-btn" type="primary" bindtap="submitForm">
-					Set up and GO!
-				</button>
-			</navigator>
+		<view class="weui-btn-area" wx:if="{{!showWait}}">
+			<button class="weui-btn" type="primary" bindtap="gotoSettings">
+				Set up and GO!
+			</button>
 		</view>
 	</mp-form-page>
 </view>

@@ -102,5 +102,11 @@ Page({
    */
   onShareAppMessage: function () {
 
+  },
+  gotoSettings: function () {
+    /* Goto control page */
+    wx.navigateTo({
+      url: "/pages/alterSettings/alterSettings"
+    });
   }
-})
+});

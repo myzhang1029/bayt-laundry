@@ -1,11 +1,22 @@
-<!--miniprogram/pages/controlMachine/controlMachine.wxml-->
-<text>miniprogram/pages/controlMachine/controlMachine.wxml</text>
-<mp-dialog
- title="test"
- show="{{true}}"
- bindbuttontap="tapDialogButton"
- buttons="{{[{text: '取消'}, {text: '确认'}]}}"
->
-	<view>test content</view>
-</mp-dialog>
+<!-- miniprogram/pages/controlMachine/controlMachine.wxml -->
+<mp-halfScreenDialog
+ bindbuttontap="buttontap"
+ show="{{showAfterMidnightNotice}}"
+ maskClosable="{{false}}"
+ title="Midnight Notice"
+ desc="It's after midnight, using the washing machine or dryer might disturb others."
+ tips="I can remind you tomorrow when a machine is ready"
+ buttons="{{buttons}}"
+/>
+<mp-toptips msg="{{error}}" type="error" show="{{error}}" />
+<view class="container">
+	<mp-form-page title="{{title}}" subtitle="{{subtitle}}">
+		<mp-form id="form" rules="{{rules}}" models="{{formData}}" />
+		<view class="weui-btn-area">
+			<button class="weui-btn" type="primary" bindtap="open">Open</button>
+			<button class="weui-btn" type="primary" bindtap="listLaundry">List my laundries</button>
+			<button class="weui-btn" type="primary" bindtap="gotoSettings">Review my settings</button>
+		</view>
+	</mp-form-page>
+</view>
 

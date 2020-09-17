@@ -5,6 +5,23 @@ Page({
    * 页面的初始数据
    */
   data: {
+    title: "Machine Control",
+    subtitle: "",
+    showAfterMidnightNotice: false,
+    buttons: [
+      {
+        type: "default",
+        className: "",
+        text: "I'll use anyway",
+        value: 0
+      },
+      {
+        type: "primary",
+        className: "",
+        text: "Sure, I see",
+        value: 1
+      }
+    ]
 
   },
 
@@ -62,5 +79,19 @@ Page({
    */
   onShareAppMessage: function () {
 
+  },
+  gotoSettings: function () {
+    /* Goto control page */
+    wx.navigateTo({
+      url: "/pages/alterSettings/alterSettings"
+    });
+  },
+  open: function () {
+    this.setData({
+      showAfterMidnightNotice: true
+    });
+  },
+  buttontap(e) {
+    console.log(e.detail);
   }
-})
+});
