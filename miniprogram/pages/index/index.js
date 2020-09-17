@@ -28,7 +28,7 @@ Page({
    */
   onShow: function () {
     wx.login({
-      success: (res) => {
+      success: res => {
         if (res.code) {
           console.log(res);
         } else {

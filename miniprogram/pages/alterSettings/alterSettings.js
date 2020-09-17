@@ -7,12 +7,12 @@ Page({
   data: {
     checkboxItems: [
       {
-        name: 'Notification when my laundry is done.',
-        value: '0',
+        name: "Notification when my laundry is done.",
+        value: "0",
         checked: true
       }, {
-        name: 'Notification when you might use a washing machine (feature in progress).',
-        value: '1',
+        name: "Notification when you might use a washing machine (feature in progress).",
+        value: "1",
         checked: true
       }
     ],
@@ -20,22 +20,22 @@ Page({
 
     },
     rules: [{
-      name: 'username',
+      name: "username",
       rules: [{
         required: true,
-        message: 'Name is required.'
+        message: "Name is required."
       }]
     }, {
-      name: 'roomnumber',
+      name: "roomnumber",
       rules: [{
         required: true,
-        message: 'Room number is required.'
+        message: "Room number is required."
       }, {
         minlength: 4,
-        message: 'Room number is invalid.'
+        message: "Room number is invalid."
       }, {
         maxlength: 4,
-        message: 'Room number is invalid.'
+        message: "Room number is invalid."
       }]
     }]
   },
@@ -97,7 +97,7 @@ Page({
   },
 
   checkboxChange: function (e) {
-    console.log('Checkbox changed to: ', e.detail.value);
+    console.log("Checkbox changed to:", e.detail.value);
 
     var checkboxItems = this.data.checkboxItems, values = e.detail.value;
     for (var i = 0, lenI = checkboxItems.length; i < lenI; ++i) {
@@ -127,8 +127,8 @@ Page({
   },
 
   submitForm: function () {
-    this.selectComponent('#form').validate((valid, errors) => {
-      console.log('Form validity is', valid, errors);
+    this.selectComponent("#form").validate((valid, errors) => {
+      console.log("Form validity is", valid, "reason is", errors);
       if (!valid) {
         const firstError = Object.keys(errors);
         if (firstError.length) {
@@ -146,7 +146,7 @@ Page({
             notify1: this.data.checkboxItems[0].checked,
             notify2: this.data.checkboxItems[1].checked
           },
-          success: (resp) => {
+          success: resp => {
             console.log("Register succeeded:");
             console.log(resp);
             // Goto control page
@@ -154,7 +154,7 @@ Page({
               url: "/pages/controlMachine/controlMachine"
             });
           },
-          fail: (resp) => {
+          fail: resp => {
             console.log("Register failed:");
             console.log(resp);
             this.setData({
