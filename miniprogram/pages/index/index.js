@@ -42,7 +42,7 @@ Page({
           /* Wait for user to click register */
           this.setData({
             showWait: false
-          })
+          });
         }
       },
       fail: resp => {

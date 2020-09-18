@@ -4,7 +4,7 @@
  show="{{showAfterMidnightNotice}}"
  maskClosable="{{false}}"
  title="Midnight Notice"
- desc="It's after midnight, using the washing machine or dryer might disturb others."
+ desc="It's after midnight now, using the washing machine or dryer might disturb others."
  tips="I can remind you tomorrow when a machine is ready"
  buttons="{{buttons}}"
 />
@@ -12,11 +12,14 @@
 <view class="container">
 	<mp-form-page title="{{title}}" subtitle="{{subtitle}}">
 		<mp-form id="form" rules="{{rules}}" models="{{formData}}" />
-		<view class="weui-btn-area">
-			<button class="weui-btn" type="primary" bindtap="open">Open</button>
-			<button class="weui-btn" type="primary" bindtap="listLaundry">List my laundries</button>
-			<button class="weui-btn" type="primary" bindtap="gotoSettings">Review my settings</button>
+		<button class="weui-btn" type="primary" bindtap="open">Open</button>
+		<view class="weui-flex">
+			<view class="weui-flex__item">
+				<button class="weui-btn" type="primary" bindtap="listLaundry">List my laundries</button>
+			</view>
+			<view class="weui-flex__item">
+				<button class="weui-btn" type="primary" bindtap="gotoSettings">Review my settings</button>
+			</view>
 		</view>
 	</mp-form-page>
 </view>
-
