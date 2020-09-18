@@ -1,16 +1,14 @@
 <!-- miniprogram/pages/index/index.wxml -->
 
 <mp-toptips msg="{{error}}" type="error" show="{{error}}" />
-<view class="container">
-	<mp-form-page title="{{title}}" subtitle="{{subtitle}}">
-		<mp-form id="form" rules="{{rules}}" models="{{formData}}" />
-		<mp-cells ext-class="" title="">
-			<mp-cell value="Please wait..." wx:if="{{showWait}}" />
-		</mp-cells>
-		<view class="weui-btn-area" wx:if="{{!showWait}}">
-			<button class="weui-btn" type="primary" bindtap="gotoSettings">
-				Set up and GO!
-			</button>
-		</view>
-	</mp-form-page>
-</view>
+<mp-form-page title="{{title}}" subtitle="{{subtitle}}">
+	<mp-cells ext-class="" title="">
+		<mp-cell value="Please wait..." wx:if="{{showWait}}" />
+	</mp-cells>
+	<view class="weui-btn-area" wx:if="{{!showWait}}">
+		<button class="weui-btn" type="primary" bindtap="gotoSettings">
+			Set up and GO!
+		</button>
+	</view>
+</mp-form-page>
+

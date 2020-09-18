@@ -1,7 +1,7 @@
 <!--miniprogram/pages/alterSettings/alterSettings.wxml-->
 
 <mp-toptips msg="{{error}}" type="error" show="{{error}}" />
-<mp-form-page title="{{title}}" subtitle="Almost there!">
+<mp-form-page title="{{title}}" subtitle="{{subtitle}}">
 	<view class="page__bd">
 		<mp-form id="form" rules="{{rules}}" models="{{formData}}">
 			<mp-cells title="Things about you" footer="Everything will only be visible to house members.">

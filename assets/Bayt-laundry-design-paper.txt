@@ -1,23 +1,63 @@
 Basic usage:
-1.Login: Get WeChat info -> Store
-2.Get info: Room number, Laundry Room: Girl or Boy -> Store with login
-3.Select machine and set timing or ask someone to take -> Store with machine number
-4.Settings: Notification, Room number
+    1.Login: Get WeChat info -> Store
+    2.Get info: Room number, Laundry Room: Girl or Boy -> Store with login
+    3.Select machine and set timing or ask someone to take -> Store with machine number
+    4.Settings: Notification, Room number, name, etc.
 
 Views:
-1.Index page (index.wxml):
-Optional, if not logged in, we ask for that, if not set up, we set up.
-2.Settings (alterSettings.wxml):
-Room number and laundry room selection:
-Possible animation:
-(1)What room are you in?+input field+OK button
-(2)I guess you use the girl/boys' laundry room, correct?+ Yes! Button+ No, I use the boy/girls' laundry room. Button
-(3)All set!
-3.Machine selection (controlMachine.wxml):
-Map of the room, machines clickable.
-4.Machine view (controlMachine.wxml popup):
-(1)X is using this machine, scheduled finish time is X
-Button: Ask him/her to take the clothes
-(2)I want to use this machine until <input>
-Checkbox: Please remind me to take the clothes
-Button: Done
+    1.Index page (index.wxml):
+      Optional, if not logged in, we ask for that, if not set up, we set up.
+    2.Settings (alterSettings.wxml):
+      Name, room number and notifications
+    3.Machine selection (controlMachine.wxml):
+      Map of the room, machines clickable.
+    4.Machine view (controlMachine.wxml popup):
+        (1)X is using this machine, scheduled finish time is X
+           Button: Ask him/her to take the clothes/Dismiss
+        (2)I want to use this machine until <input>
+           Checkbox: Please remind me to take the clothes
+           Button: Done
+        (3)After midnight notice: 00:00-5:30
+
+Database scheme:
+    1.table "users":
+      key: uid
+      data: {name, roomNumber}
+    2.table "usage":
+      key: machineID
+      data: {
+        curUid, curStartTime, curPlannedEndTime,
+        /* oldUid, oldStartTime, oldPlannedEndTime */
+      }
+
+Object definitions:
+    1.uid: WeChat openid.
+    2.userInfo: {uid, userName, roomNumber, notifyN}
+    3.machineID: Unique ID containing the laundry room number and machine index.
+                 (e.g. C4-d1 for the first dryer in C4, C6-w4 for the fourth
+                 washing machine in C6)
+    4.usageInfo: {userInfo, machineID, startTime, plannedEndTime or takenTime}.
+
+Operations:
+    1.register: Add or update user
+      @param[internal] uid User's unique id.
+      @param userName User's name.
+      @param roomNumber User's room number.
+      @param notifyN Whether notification N should be delivered.
+      @return true on success
+    2.is_registered: Check for registered information
+      @param[internal] uid User's unique id.
+      @return userInfo object if registered, false if not.
+    3.use_machine: Record use of machine
+      @param[internal] uid User's unique id.
+      @param machineID ID of the machine to operate.
+      @param[optional] plannedEndTime Planned end time of the laundry.
+      @return true if succeeded, {code:1} + usageInfo  if
+              someone else is using it, {code:2, errMsg} if failed.
+      @note If an entry by the user him/herself exists and @p plannedEndTime
+            is unspecified, the usage is ended; if @p plannedEndTime exists,
+            the usage is extended, if the new value has passed, a code of 2 is
+            returned.
+    4.get_my_laundries: List laundries owned by the user and their machineIDs
+      @param[internal] uid User's unique id.
+      @return List of usageInfo.
