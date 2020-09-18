@@ -4,8 +4,7 @@ cloud.init({
 });
 
 exports.main = async (event, context) => {
-  const userInfo = cloud.getWXContext();
-  const openid = userInfo.OPENID;
+  const { OPENID } = cloud.getWXContext();
   /* The record to be creaed/updated */
   const dbData = {
     userName: event.userName,
@@ -24,7 +23,7 @@ exports.main = async (event, context) => {
     }
   }
   /* This code works for both creation and update */
-  await db.collection("users").doc(openid).set({
+  await db.collection("users").doc(OPENID).set({
     data: dbData
   });
   return true;

@@ -4,8 +4,7 @@ cloud.init({
 });
 
 exports.main = async (event, context) => {
-  const userInfo = cloud.getWXContext();
-  const openid = userInfo.OPENID;
+  const { OPENID } = cloud.getWXContext();
   const db = cloud.database();
   /* Ensure the collection exists */
   try {
@@ -17,7 +16,7 @@ exports.main = async (event, context) => {
     }
   }
   const lkup = db.collection("users").where({
-    _id: openid
+    _id: OPENID
   });
   const count = await lkup.count();
   if (count.total == 0) {
