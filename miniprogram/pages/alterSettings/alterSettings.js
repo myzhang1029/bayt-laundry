@@ -7,17 +7,16 @@ Page({
   data: {
     title: "Settings",
     subtitle: "Almost there!",
-    checkboxItems: [
-      {
-        name: "Notification when my laundry is done.",
-        value: "0",
-        checked: true
-      }, {
-        name: "Notification when you might use a washing machine (feature in progress).",
-        value: "1",
-        checked: true
-      }
-    ],
+    showWait: false,
+    checkboxItems: [{
+      name: "Notification when my laundry is done.",
+      value: "0",
+      checked: true
+    }, {
+      name: "Notification when you might use a washing machine (feature in progress).",
+      value: "1",
+      checked: true
+    }],
     formData: {
 
     },
@@ -61,17 +60,15 @@ Page({
               userName: values.userName,
               roomNumber: values.roomNumber
             },
-            checkboxItems: [
-              {
-                name: "Notification when my laundry is done.",
-                value: "0",
-                checked: values.notify1
-              }, {
-                name: "Notification when you might use a washing machine (feature in progress).",
-                value: "1",
-                checked: values.notify2
-              }
-            ]
+            checkboxItems: [{
+              name: "Notification when my laundry is done.",
+              value: "0",
+              checked: values.notify1
+            }, {
+              name: "Notification when you might use a washing machine (feature in progress).",
+              value: "1",
+              checked: values.notify2
+            }]
           });
         }
       },
@@ -138,7 +135,8 @@ Page({
   checkboxChange: function (e) {
     console.log("Checkbox changed to:", e.detail.value);
 
-    var checkboxItems = this.data.checkboxItems, values = e.detail.value;
+    var checkboxItems = this.data.checkboxItems,
+      values = e.detail.value;
     for (var i = 0, lenI = checkboxItems.length; i < lenI; ++i) {
       checkboxItems[i].checked = false;
 
@@ -176,6 +174,9 @@ Page({
           });
         }
       } else {
+        this.setData({
+          showWait: true
+        });
         wx.cloud.callFunction({
           name: "register",
           data: {
@@ -187,6 +188,9 @@ Page({
           success: resp => {
             console.log("Register succeeded:");
             console.log(resp);
+            this.setData({
+              showWait: false
+            });
             // Goto control page
             wx.navigateTo({
               url: "/pages/controlMachine/controlMachine"

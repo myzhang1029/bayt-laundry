@@ -1,5 +1,6 @@
 {
   "usingComponents": {
+    "mp-loading": "/miniprogram_npm/weui-miniprogram/loading/loading",
     "mp-toptips": "/miniprogram_npm/weui-miniprogram/toptips/toptips",
     "mp-form-page": "/miniprogram_npm/weui-miniprogram/form-page/form-page",
     "mp-form": "/miniprogram_npm/weui-miniprogram/form/form",

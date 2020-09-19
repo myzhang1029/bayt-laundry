@@ -38,7 +38,9 @@
 				</mp-checkbox-group>
 			</mp-cells>
 			<view class="weui-btn-area">
-				<button class="weui-btn" type="primary" bindtap="submitForm">Looks good!</button>
+				<button class="weui-btn" type="primary" bindtap="submitForm">
+					<view class="weui-loading weui-loading" wx:if="{{showWait}}" />
+					Looks good!</button>
 			</view>
 		</mp-form>
 	</view>
