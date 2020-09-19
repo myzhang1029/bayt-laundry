@@ -7,63 +7,61 @@ Page({
   data: {
     title: "Machine Control",
     subtitle: "",
+    usageString: "Click on the machine to see who is using it, check in your own usage or check out. Click \"Settings\" to review your settings.",
     showAfterMidnightNotice: false,
+    machineBaseCSS: "height:7vh;position:relative;z-index:2;",
     /* TODO: Find real location for the images */
     machines: [
       /* Boy side */
       {
         name: "w1",
-        location: ["10rpx", "2rpx"],
-        handlerName: "w1Click"
+        location: ["-52vh", "-14vh"]
       },
       {
         name: "w2",
-        location: ["12rpx", "2rpx"],
-        handlerName: "w2Click"
+        location: ["-61vh", "-14vh"]
       },
       {
         name: "d1",
-        location: ["15rpx", "2rpx"],
-        handlerName: "d1Click"
+        location: ["-70vh", "-14vh"]
       },
       {
         name: "d2",
-        location: ["1rpx", "2rpx"],
-        handlerName: "d2Click"
+        location: ["-79vh", "-14vh"]
       },
       {
         name: "w3",
-        location: ["13rpx", "2rpx"],
-        handlerName: "w3Click"
+        location: ["-74vh", "6vh"]
       },
       /* Girl side */
       {
         name: "w4",
-        location: ["19rpx", "2rpx"],
-        handlerName: "w4Click"
+        location: ["-8.5vh", "14vh"]
       },
       {
         name: "w5",
-        location: ["24rpx", "2rpx"],
-        handlerName: "w5Click"
+        location: ["-17.5vh", "14vh"]
       },
       {
         name: "d3",
-        location: ["45rpx", "2rpx"],
-        handlerName: "d3Click"
+        location: ["-26.5vh", "14vh"]
       },
       {
         name: "d4",
-        location: ["50rpx", "2rpx"],
-        handlerName: "d4Click"
+        location: ["-35.5vh", "14vh"]
       },
       {
         name: "w6",
-        location: ["60rpx", "2rpx"],
-        handlerName: "w6Click"
+        location: ["-30.5vh", "-6vh"]
       }
     ],
-    buttons: [{
+    buttonsSUD: [{
+      type: "primary",
+      className: "",
+      text: "OK",
+      value: 1
+    }],
+    buttonsSAMN: [{
       type: "default",
       className: "",
       text: "I'll use anyway",
@@ -133,18 +131,55 @@ Page({
   onShareAppMessage: function () {
 
   },
+
   gotoSettings: function () {
     /* Goto control page */
     wx.navigateTo({
       url: "/pages/alterSettings/alterSettings"
     });
   },
-  open: function () {
+
+  showUD: function () {
     this.setData({
-      showAfterMidnightNotice: true
+      showUsageDialog: true
     });
   },
-  buttontap(e) {
+
+  tapUD: function () {
+    this.setData({
+      showUsageDialog: false
+    });
+  },
+
+  buttontap: function (e) {
     console.log(e.detail);
+  },
+
+  machineClick: function (cont) {
+    console.log(cont);
+    wx.cloud.callFunction({
+      name: "is_registered",
+      data: {},
+      success: resp => {
+        const values = resp.result;
+        console.log("is_register returned:");
+        console.log(resp);
+        if (!values) {
+          console.log("Code fault: not registered");
+          this.setData({
+            error: "Something unexpected happened! Please re-enter the program!"
+          });
+        }
+        const machineID = values.roomNumber.slice(0, 2) + "-" + cont.target.id;
+        console.log("Click on machine: ", machineID);
+      },
+      fail: resp => {
+        console.log("is_registered failed:");
+        console.log(resp);
+        this.setData({
+          error: "Something unexpected happened! Please try again!"
+        });
+      }
+    });
   }
 });

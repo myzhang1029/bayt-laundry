@@ -1,41 +1,47 @@
 <!-- miniprogram/pages/controlMachine/controlMachine.wxml -->
 <mp-halfScreenDialog
+ bindbuttontap="tapUD"
+ show="{{showUsageDialog}}"
+ maskClosable="{{false}}"
+ title="Usage"
+ desc="{{usageString}}"
+ buttons="{{buttonsSUD}}"
+/>
+<mp-halfScreenDialog
  bindbuttontap="buttontap"
  show="{{showAfterMidnightNotice}}"
  maskClosable="{{false}}"
  title="Midnight Notice"
  desc="It's after midnight now, using the washing machine or dryer might disturb others."
  tips="I can remind you tomorrow when a machine is ready"
- buttons="{{buttons}}"
+ buttons="{{buttonsSAMN}}"
 />
 <mp-toptips msg="{{error}}" type="error" show="{{error}}" />
-<mp-form-page title="{{title}}" subtitle="{{subtitle}}">
-	<mp-cells>
-		<mp-cell title="Boys' side">
-			<image src="/images/boy-side-base.svg" class="base-image" />
-		</mp-cell>
-		<mp-cell title="Girls' side">
-			<image src="/images/girl-side-base.svg" class="base-image" />
-		</mp-cell>
+<view class="container">
+	<view class="weui-form__text-area weui-form__text-area">
+		<view class="weui-form__title">{{title}}</view>
+		<view class="weui-form__desc">{{subtitle}}</view>
+	</view>
+		<button class="weui-btn" type="default" bindtap="showUD">Show Usage</button>
+	<mp-cells title="Boys' side" class="base-image-container">
+		<image src="/images/boy-side-base.svg" class="base-image" />
+	</mp-cells>
+	<mp-cells title="Girls' side" class="base-image-container">
+		<image src="/images/girl-side-base.svg" class="base-image" />
 	</mp-cells>
 	<view class="machine-image-container" wx:for="{{machines}}" wx:key="item">
 		<image
 		 class="machine-image"
 		 src="{{item.name[0]=='w'?'/images/washing-machine.svg':'/images/tumble-dryer.svg'}}"
 		 id="{{item.name}}"
-		 style="width:70rpx;position:absolute;z-index:2;top:{{item.location[0]}};left:{{item.location[1]}};"
-		 bindtap="{{item.handlerName}}"
+		 style="{{machineBaseCSS}}top:{{item.location[0]}};left:{{item.location[1]}};"
+		 bindtap="machineClick"
 		/>
 	</view>
-	<button class="weui-btn" type="primary" bindtap="open">Open</button>
-	<view class="weui-flex">
-		<view class="weui-flex__item">
-			<button class="weui-btn" type="primary" bindtap="listLaundry">List my laundries</button>
-		</view>
-		<view class="weui-flex__item">
-			<button class="weui-btn" type="primary" bindtap="gotoSettings">
-				Review my settings
-			</button>
-		</view>
+	<view class="weui-btn-area">
+		<button class="weui-btn" type="primary" bindtap="listLaundry">My Laundries in Progress</button>
+		<button class="weui-btn" type="primary" bindtap="gotoSettings">Settings</button>
 	</view>
-</mp-form-page>
+	<view id="usageView">
+	</view>
+</view>

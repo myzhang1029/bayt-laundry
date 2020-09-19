@@ -1,4 +1,20 @@
 /* miniprogram/pages/controlMachine/controlMachine.wxss */
+.container {
+  padding-top: 50rpx;
+  height: 100vh;
+}
+
+.base-image-container, .machine-image-container {
+  text-align:center;
+}
+
+.machine-image-container {
+  /* Inner content relatively positioned */
+  height: 0;
+}
+
 .base-image {
   z-index: 1;
+  height: 35vh;
+  width: 40vh;
 }
