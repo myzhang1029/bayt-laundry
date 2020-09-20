@@ -40,14 +40,14 @@ function login() {
 }
 
 /** Make sure a machine's database entry exists (done).
+ * @param db(Database) The database to operate.
  * @param machineID(str) ID of the machine.
  * @return Promise that resolves to the doc of the machine.
  */
-async function ensure_machine(machineID) {
+async function ensure_machine(db, machineID) {
     if (!machineID) {
         throw `machineID cannot be ${machineID}`;
     }
-    const db = wx.cloud.database();
     const usageDb = db.collection("usage");
     const doc = usageDb.doc(machineID);
     /* Data to be put into an empty machine */
@@ -71,9 +71,7 @@ async function ensure_machine(machineID) {
         } else {
             throw error;
         }
-    }).then(() => {
-        return doc;
-    })
+    }).then(() => doc);
 }
 
 /** Look up userInfo by uid (done).
@@ -84,19 +82,19 @@ async function lookup_user_info(uid) {
     if (!uid) {
         return uid;
     }
-    const db = wx.cloud.database()
-    return db.collection("users").doc(uid).get().then(resp => {
-        return resp.data;
-    }).catch(resp => {
-        return false;
-    });
+    const db = wx.cloud.database();
+    return db.collection("users")
+        .doc(uid)
+        .get()
+        .then(resp => resp.data)
+        .catch(() => null);
 }
 
 /** Register/Update user info assosiated to the Wechat openid (done).
  * @param data userInfo Object (see design paper).
 */
 async function register(data) {
-    const OPENID = login();
+    const openid = login();
     /* The record to be created/updated */
     const dbData = {
         userName: data.userName,
@@ -104,9 +102,9 @@ async function register(data) {
         notify1: data.notify1,
         notify2: data.notify2
     };
-    const db = wx.cloud.database()
+    const db = wx.cloud.database();
     /* This code works for both creation and update */
-    return db.collection("users").doc(OPENID).set({
+    return db.collection("users").doc(openid).set({
         data: dbData
     });
 }
@@ -115,20 +113,14 @@ async function register(data) {
  * @return userInfo if registered, false otherwise.
  */
 async function is_registered() {
-    const OPENID = login();
+    const openid = login();
     const db = wx.cloud.database();
     const lkup = db.collection("users").where({
-        _id: OPENID
+        _id: openid
     });
-    return lkup.count().then(count => {
-        if (count.total == 0) {
-            return false;
-        } else {
-            return lkup.get();
-        }
-    }).then(datas => {
-        return datas ? datas.data[0] : false;
-    });
+    return lkup.count()
+        .then(count => count.total == 0 ? false : lkup.get())
+        .then(datas => datas ? datas.data[0] : false);
 }
 
 /** Check who is using/used the machine (done).
@@ -140,32 +132,94 @@ async function is_registered() {
  */
 async function whos_using(machineID, allow_prev) {
     const db = wx.cloud.database();
-    return ensure_machine(machineID).then(resp => {
-        return resp.get()
+    return ensure_machine(db, machineID).then(resp => resp.get())
+        .then(resp => {
+            if (resp.data.cur.uid) {
+                return resp.data.cur.uid;
+            } else if (allow_prev) {
+                /* No need to test whether resp.previous.uid is null here */
+                return resp.data.previous.uid;
+            } else {
+                return null;
+            }
+        }).then(lookup_user_info);
+}
+
+/** Machine Check-in or check-out.
+ * @param machineID ID of the machine to operate.
+ * @param[optional] plannedEndTime Planned end time of the laundry.
+ * @return true if succeeded, {code:1, ...usageInfo}  if
+ *         someone else is using it, {code:2, errMsg} if failed.
+ * @note If an entry by the user him/herself exists and @p plannedEndTime
+ *       is unspecified, the usage is ended; if @p plannedEndTime exists,
+ *       the usage is extended, if the new value has passed, a code of 2 is
+ *       returned.
+ */
+async function use_machine(machineID, plannedEndTime) {
+    const openid = login();
+    const db = wx.cloud.database();
+    var machineDoc;
+    return ensure_machine(db, machineID).then(resp => {
+        /* Get the current info of the machine. */
+        machineDoc = resp;
+        return resp.get();
     }).then(resp => {
-        if (resp.data.cur.uid) {
-            return resp.data.cur.uid;
-        } else if (allow_prev) {
-            /* No need to test whether resp.previous.uid is null here */
-            return resp.data.previous.uid;
+        /* Create data to be updaed into machineDoc. */
+        if (resp.cur.uid == null && plannedEndTime) {
+            return {
+                cur: {
+                    uid: openid,
+                    startTime: Date(),
+                    plannedEndTime: plannedEndTime
+                }
+            };
+        } else if (resp.cur.uid == openid && plannedEndTime) {
+            return {
+                cur: {
+                    plannedEndTime: plannedEndTime
+                }
+            };
+        } else if (resp.cur.uid == openid) {
+            return {
+                previous: {
+                    uid: resp.cur.uid,
+                    startTime: resp.cur.startTime,
+                    actualEndTime: Date()
+                },
+                cur: {
+                    uid: null,
+                    startTime: null,
+                    plannedEndTime: null
+                }
+            };
         } else {
-            return null;
+            return {...whos_using(machineID, true), code: 1 };
         }
-    }).then(lookup_user_info);
+    }).then(data => {
+        /* Update machineInfo with provided data */
+        if (data.code == 1) {
+            /* Don't pass userInfo into .update() */
+            return data;
+        }
+        return machineDoc.update({
+            data: data
+        });
+    }).catch(resp => ({...resp, code: 2 }));
 }
 
 /** Get a list of usageInfos related to the current user
  * @return List of usageInfos
  */
 async function get_my_laundries() {
-    const OPENID = login();
+    const openid = login();
     const db = wx.cloud.database();
     const lkup = db.collection("usage").where({
-        "cur.uid": OPENID
+        "cur.uid": openid
     });
-    return lkup.get().then(resp => {
-        return resp.data /* TODO Convert to usageInfo */
-    });
+    return lkup.get().then(resp => resp.data.map(async item => {
+        var userInfo = await is_registered();
+        return {...item.cur, ...userInfo};
+    }));
 }
 
-export { login, ensure_machine, lookup_user_info, register, is_registered, whos_using, get_my_laundries };
+export { login, ensure_machine, lookup_user_info, register, is_registered, whos_using, use_machine, get_my_laundries };

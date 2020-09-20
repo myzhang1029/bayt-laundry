@@ -38,7 +38,7 @@ Database scheme:
 
 Object definitions:
     1.uid: WeChat openid.
-    2.userInfo: {uid, userName, roomNumber, notifyN}
+    2.userInfo: {_id, userName, roomNumber, notifyN}
     3.machineID: Unique ID containing the laundry room number and machine index.
                  (e.g. C4-d1 for the first dryer in C4, C6-w4 for the fourth
                  washing machine in C6)
