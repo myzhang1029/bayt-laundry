@@ -1,4 +1,6 @@
 // miniprogram/pages/alterSettings/alterSettings.js
+
+var oper = require("../../scripts/operations.js");
 Page({
 
   /**
@@ -45,42 +47,35 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    wx.cloud.callFunction({
-      name: "is_registered",
-      data: {},
-      success: resp => {
-        const values = resp.result;
-        console.log("is_register returned:");
-        console.log(resp);
-        if (values) {
-          /* Pre-fill the form */
-          this.setData({
-            subtitle: "",
-            formData: {
-              userName: values.userName,
-              roomNumber: values.roomNumber
-            },
-            checkboxItems: [{
-              name: "Notification when my laundry is done.",
-              value: "0",
-              checked: values.notify1
-            }, {
-              name: "Notification when you might use a washing machine (feature in progress).",
-              value: "1",
-              checked: values.notify2
-            }]
-          });
-        }
-      },
-      fail: resp => {
-        console.log("is_registered failed:");
-        console.log(resp);
+    oper.is_registered().then(res => {
+      console.log("is_registered returned:");
+      console.log(res);
+      if (res) {
+        /* Pre-fill the form */
         this.setData({
-          error: "Something unexpected happened! Please try again!"
+          subtitle: "",
+          formData: {
+            userName: res.userName,
+            roomNumber: res.roomNumber
+          },
+          checkboxItems: [{
+            name: "Notification when my laundry is done.",
+            value: "0",
+            checked: res.notify1
+          }, {
+            name: "Notification when you might use a washing machine (feature in progress).",
+            value: "1",
+            checked: res.notify2
+          }]
         });
       }
+    }).catch(resp => {
+      console.log("is_registered failed:");
+      console.log(resp);
+      this.setData({
+        error: "Something unexpected happened! Please try again!"
+      });
     });
-
   },
 
   /**
@@ -172,39 +167,39 @@ Page({
           this.setData({
             error: errors[firstError[0]].message
           });
+        } else {
+          this.setData({
+            error: "Something unexpected happened! Please try again!"
+          });
         }
-      } else {
-        this.setData({
-          showWait: true
-        });
-        wx.cloud.callFunction({
-          name: "register",
-          data: {
-            userName: this.data.formData.userName,
-            roomNumber: this.data.formData.roomNumber,
-            notify1: this.data.checkboxItems[0].checked,
-            notify2: this.data.checkboxItems[1].checked
-          },
-          success: resp => {
-            console.log("Register succeeded:");
-            console.log(resp);
-            this.setData({
-              showWait: false
-            });
-            // Goto control page
-            wx.navigateTo({
-              url: "/pages/controlMachine/controlMachine"
-            });
-          },
-          fail: resp => {
-            console.log("Register failed:");
-            console.log(resp);
-            this.setData({
-              error: "Register failed! Please try again!"
-            });
-          }
-        });
+        return;
       }
+      this.setData({
+        showWait: true
+      });
+      oper.register({
+        userName: this.data.formData.userName,
+        roomNumber: this.data.formData.roomNumber,
+        notify1: this.data.checkboxItems[0].checked,
+        notify2: this.data.checkboxItems[1].checked
+      }).then(resp => {
+        console.log("Register succeeded:");
+        console.log(resp);
+        // Goto control page
+        wx.navigateTo({
+          url: "/pages/controlMachine/controlMachine"
+        });
+      }).catch(resp => {
+        console.log("Register failed:");
+        console.log(resp);
+        this.setData({
+          error: "Register failed! Please try again!"
+        });
+      }).finally(() => {
+        this.setData({
+          showWait: false
+        });
+      });
     });
   }
 });

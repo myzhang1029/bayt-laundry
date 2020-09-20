@@ -25,20 +25,39 @@ exports.main = async (event, context) => {
     }
   }
   const usageDb = db.collection("usage");
-  const self_lkup = usageDb.where({
-    machineID: event.machineID
-  });
-  const count = await self_lkup.count();
-  if (count.total == 0)
-  {
-    /* doesn't exist */
-    const data = {
-      curUid: OPENID,
-      curStartTime: Date(),
-      curPlannedEndTime: event.plannedEndTime
-    }
-    usageDb.doc(event.)
+  if (event.plannedEndTime) {
+    return await usageDb.where({
+      _id: event.machineID
+    }).get().then(res => {
+      const machine = res.data;
+      if (machine.length == 0 || machine[0].curUid == null) {
+        usageDb.doc(event.machineID).set({
+          curUid: OPENID,
+          curStartTime: Date(),
+          curPlannedEndTime: event.plannedEndTime
+        });
+        return true;
+      } else if (machine[0].curUid == OPENID) {
+        usageDb.doc(event.machineID).set({
+          curPlannedEndTime: event.plannedEndTime
+        });
+        return true;
+      } else {
+        const usingUserInfo = (await db.collection("user").where({
+          _id: machine[0].curUid
+        }).get()).data[0]
+        return usingUserInfo + machine[0];
+      }
+    });
+  } else {
+    return await usageDb.where({
+      _id: event.machineID
+    }).get().then(res1 => {
+      db.collection("user").where({
+        _id: machine[0].curUid
+      }).get().then(res2 => {
+        return res2.data[0] + res1.data[0];
+      });
+    });
   }
-  const datas = await lkup.get();
-  return datas.data[0];
 }

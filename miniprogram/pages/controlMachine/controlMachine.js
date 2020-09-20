@@ -1,4 +1,6 @@
 // miniprogram/pages/controlMachine/controlMachine.js
+
+var oper = require("../../scripts/operations.js");
 Page({
 
   /**
@@ -80,7 +82,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+  
   },
 
   /**
@@ -172,6 +174,17 @@ Page({
         }
         const machineID = values.roomNumber.slice(0, 2) + "-" + cont.target.id;
         console.log("Click on machine: ", machineID);
+        wx.cloud.callFunction({
+          name: "use_machine",
+          data: {
+            machineID: machineID,
+            //plannedEndTime: Date()
+          },
+          complete: resp => {
+            console.log("use_machine returned:");
+            console.log(resp);
+          }
+        });
       },
       fail: resp => {
         console.log("is_registered failed:");

@@ -1,4 +1,6 @@
 // miniprogram/pages/index/index.js
+
+var oper = require("../../scripts/operations.js");
 Page({
 
   /**
@@ -14,6 +16,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    console.log(oper);
     wx.login({
       success: res => {
         if (res.code) {
@@ -26,32 +29,27 @@ Page({
         }
       }
     });
-    wx.cloud.callFunction({
-      name: "is_registered",
-      data: {},
-      success: resp => {
-        console.log("is_register returned:");
-        console.log(resp);
-        if (resp.result) {
-          /* Goto control page */
-          wx.navigateTo({
-            url: "/pages/controlMachine/controlMachine"
-          });
-        } else {
-          console.log("enter");
-          /* Wait for user to click register */
-          this.setData({
-            showWait: false
-          });
-        }
-      },
-      fail: resp => {
-        console.log("is_registered failed:");
-        console.log(resp);
+    oper.is_registered().then(resp => {
+      console.log("is_registered returned:");
+      console.log(resp);
+      if (resp) {
+        /* Goto control page */
+        wx.navigateTo({
+          url: "/pages/controlMachine/controlMachine"
+        });
+      } else {
+        console.log("enter");
+        /* Wait for user to click register */
         this.setData({
-          error: "Something unexpected happened! Please try again!"
+          showWait: false
         });
       }
+    }).catch(resp => {
+      console.log("is_registered failed:");
+      console.log(resp);
+      this.setData({
+        error: "Something unexpected happened! Please try again!"
+      });
     });
   },
 

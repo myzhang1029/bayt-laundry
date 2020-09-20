@@ -1,7 +1,7 @@
 {
   "pages": [
-    "pages/controlMachine/controlMachine",
     "pages/index/index",
+    "pages/controlMachine/controlMachine",
     "pages/alterSettings/alterSettings"
   ],
   "window": {

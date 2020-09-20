@@ -12,9 +12,11 @@ Views:
     3.Machine selection (controlMachine.wxml):
       Map of the room, machines clickable.
     4.Machine view (controlMachine.wxml popup):
+        (0)I want to check who is using / used it.
         (1)X is using this machine, scheduled finish time is X
            Button: Ask him/her to take the clothes/Dismiss
         (2)I want to use this machine until <input>
+           Warning: X is registered to be using this machine, press OK if you are sure nothing is in it.
            Checkbox: Please remind me to take the clothes
            Button: Done
         (3)After midnight notice: 00:00-5:30
@@ -26,8 +28,12 @@ Database scheme:
     2.table "usage":
       key: machineID
       data: {
-        curUid, curStartTime, curPlannedEndTime,
-        /* oldUid, oldStartTime, oldPlannedEndTime */
+        cur: {
+          uid, startTime, plannedEndTime
+        },
+        previous: {
+          uid, startTime, actualEndTime
+        }
       }
 
 Object definitions:
@@ -48,6 +54,9 @@ Operations:
     2.is_registered: Check for registered information
       @param[internal] uid User's unique id.
       @return userInfo object if registered, false if not.
+    3.whos_using: Check which user is using the machine
+      @param machineID ID of the machine to check.
+      @return usageInfo of the current or previous usage.
     3.use_machine: Record use of machine
       @param[internal] uid User's unique id.
       @param machineID ID of the machine to operate.
