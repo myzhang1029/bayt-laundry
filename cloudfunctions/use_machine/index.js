@@ -4,6 +4,7 @@ cloud.init({
 });
 
 exports.main = async (event, context) => {
+  console.log("Enter");
   const { OPENID } = cloud.getWXContext();
   const db = cloud.database();
   /* Ensure the collection exists */
@@ -26,35 +27,58 @@ exports.main = async (event, context) => {
   }
   const usageDb = db.collection("usage");
   if (event.plannedEndTime) {
+    console.log("Has plannedEndTime!");
     return await usageDb.where({
       _id: event.machineID
-    }).get().then(res => {
+    }).get().then(async res => {
       const machine = res.data;
       if (machine.length == 0 || machine[0].curUid == null) {
+        console.log("No original entry!");
         usageDb.doc(event.machineID).set({
-          curUid: OPENID,
-          curStartTime: Date(),
-          curPlannedEndTime: event.plannedEndTime
+          data: {
+            curUid: OPENID,
+            curStartTime: Date(),
+            plannedEndTime: event.plannedEndTime
+          }
         });
         return true;
       } else if (machine[0].curUid == OPENID) {
+        console.log("Has my entry!");
         usageDb.doc(event.machineID).set({
-          curPlannedEndTime: event.plannedEndTime
+          data: {
+            plannedEndTime: event.plannedEndTime
+          }
         });
         return true;
       } else {
-        const usingUserInfo = (await db.collection("user").where({
+        console.log("Has others' entry!");
+        return await db.collection("user").where({
           _id: machine[0].curUid
-        }).get()).data[0]
-        return usingUserInfo + machine[0];
+        }).get().then(res2 => {
+          return res2.data[0] + machine[0];
+        });
       }
     });
   } else {
+    console.log("No plannedEndTime!");
     return await usageDb.where({
       _id: event.machineID
-    }).get().then(res1 => {
-      db.collection("user").where({
-        _id: machine[0].curUid
+    }).get().then(async res1 => {
+      if (res1.data[0].curUid == OPENID) {
+        usageDb.doc(event.machineID).set({
+          data: {
+            curUid: null,
+            oldUid: OPENID,
+            curStartTime: null,
+            oldStartTime: res1.data[0].curStartTime,
+            plannedEndTime: null,
+            actualEndTime: Date()
+          }
+        });
+      }
+      /* else: look up userInfo */
+      return await db.collection("user").where({
+        _id: res1.data[0].curUid
       }).get().then(res2 => {
         return res2.data[0] + res1.data[0];
       });

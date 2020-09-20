@@ -16,7 +16,6 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    console.log(oper);
     wx.login({
       success: res => {
         if (res.code) {
@@ -38,7 +37,6 @@ Page({
           url: "/pages/controlMachine/controlMachine"
         });
       } else {
-        console.log("enter");
         /* Wait for user to click register */
         this.setData({
           showWait: false
