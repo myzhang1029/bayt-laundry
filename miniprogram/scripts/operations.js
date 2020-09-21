@@ -1,4 +1,5 @@
 /* Laundry control operations as defined in Bayt-laundry-design-paper.txt */
+/* This is ES2018 code */
 /*
    Copyright 2020 Zhang Maiyun.
 
@@ -207,8 +208,8 @@ async function use_machine(machineID, plannedEndTime) {
     }).catch(resp => ({...resp, code: 2 }));
 }
 
-/** Get a list of usageInfos related to the current user
- * @return List of usageInfos
+/** Get a list of usageInfos related to the current user (done).
+ * @return List of usageInfos.
  */
 async function get_my_laundries() {
     const openid = login();

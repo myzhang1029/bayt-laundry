@@ -2,46 +2,44 @@
 
 <mp-toptips msg="{{error}}" type="error" show="{{error}}" />
 <mp-form-page title="{{title}}" subtitle="{{subtitle}}">
-	<view class="page__bd">
-		<mp-form id="form" rules="{{rules}}" models="{{formData}}">
-			<mp-cells title="Things about you" footer="Everything will only be visible to house members.">
-				<view class="weui-cells__title">What is your name? *</view>
-				<mp-cell prop="userName" title="Name" ext-class="">
-					<input
-					 bindinput="formInputChange"
-					 data-field="userName"
-					 class="weui-input"
-					 placeholder="Ben George"
-					 value="{{formData.userName}}"
-					/>
-				</mp-cell>
-				<view class="weui-cells__title">What is your room number? *</view>
-				<mp-cell prop="roomNumber" title="Room" ext-class="">
-					<input
-					 bindinput="formInputChange"
-					 data-field="roomNumber"
-					 class="weui-input"
-					 placeholder="C415"
-					 value="{{formData.roomNumber}}"
-					/>
-				</mp-cell>
-			</mp-cells>
-			<mp-cells title="Options">
-				<mp-checkbox-group prop="checkbox" multi="{{true}}" bindchange="checkboxChange">
-					<mp-checkbox
-					 wx:for="{{checkboxItems}}"
-					 wx:key="value"
-					 label="{{item.name}}"
-					 value="{{item.value}}"
-					 checked="{{item.checked}}"
-					/>
-				</mp-checkbox-group>
-			</mp-cells>
-			<view class="weui-btn-area">
-				<button class="weui-btn" type="primary" bindtap="submitForm">
-					<view class="weui-loading weui-loading" wx:if="{{showWait}}" />
-					Looks good!</button>
-			</view>
-		</mp-form>
-	</view>
+	<mp-form id="form" rules="{{rules}}" models="{{formData}}">
+		<mp-cells title="Things about you" footer="Everything will only be visible to house members.">
+			<view class="weui-cells__title">What is your name? *</view>
+			<mp-cell prop="userName" title="Name" ext-class="">
+				<input
+				 bindinput="formInputChange"
+				 data-field="userName"
+				 class="weui-input"
+				 placeholder="Ben George"
+				 value="{{formData.userName}}"
+				/>
+			</mp-cell>
+			<view class="weui-cells__title">What is your room number? *</view>
+			<mp-cell prop="roomNumber" title="Room" ext-class="">
+				<input
+				 bindinput="formInputChange"
+				 data-field="roomNumber"
+				 class="weui-input"
+				 placeholder="C415"
+				 value="{{formData.roomNumber}}"
+				/>
+			</mp-cell>
+		</mp-cells>
+		<mp-cells title="Options">
+			<mp-checkbox-group prop="checkbox" multi="{{true}}" bindchange="checkboxChange">
+				<mp-checkbox
+				 wx:for="{{checkboxItems}}"
+				 wx:key="value"
+				 label="{{item.name}}"
+				 value="{{item.value}}"
+				 checked="{{item.checked}}"
+				/>
+			</mp-checkbox-group>
+		</mp-cells>
+		<view class="weui-btn-area">
+			<button class="weui-btn" type="primary" bindtap="submitForm">
+				<view class="weui-loading weui-loading" wx:if="{{showWait}}" />
+				Looks good!</button>
+		</view>
+	</mp-form>
 </mp-form-page>

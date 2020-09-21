@@ -12,7 +12,7 @@ Page({
     usageString: "Click on the machine to see who is using it, check in your own usage or check out. Click \"Settings\" to review your settings.",
     showAfterMidnightNotice: false,
     machineBaseCSS: "height:7vh;position:relative;z-index:2;",
-    /* TODO: Find real location for the images */
+    showForm: false,
     machines: [
       /* Boy side */
       {
@@ -57,6 +57,10 @@ Page({
         location: ["-30.5vh", "-6vh"]
       }
     ],
+    purposeRadioItems: [
+      { name: "I want to check in/out my laundry", value: "0", checked: true },
+      { name: "I want to see who is using the machine", value: "1" }
+    ],
     buttonsSUD: [{
       type: "primary",
       className: "",
@@ -82,7 +86,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-  
+
   },
 
   /**
@@ -156,43 +160,51 @@ Page({
   buttontap: function (e) {
     console.log(e.detail);
   },
+  
+  radioChange: function (e) {
+    console.log("Checkbox changed to:", e.detail.value);
+
+    var radioItems = this.data.radioItems;
+    for (var i = 0, len = radioItems.length; i < len; ++i) {
+      radioItems[i].checked = radioItems[i].value == e.detail.value;
+    }
+
+    this.setData({
+      radioItems: radioItems,
+      [`formData.radio`]: e.detail.value
+    });
+  },
 
   machineClick: function (cont) {
     console.log(cont);
-    wx.cloud.callFunction({
-      name: "is_registered",
-      data: {},
-      success: resp => {
-        const values = resp.result;
-        console.log("is_register returned:");
-        console.log(resp);
-        if (!values) {
-          console.log("Code fault: not registered");
-          this.setData({
-            error: "Something unexpected happened! Please re-enter the program!"
-          });
-        }
-        const machineID = values.roomNumber.slice(0, 2) + "-" + cont.target.id;
-        console.log("Click on machine: ", machineID);
-        wx.cloud.callFunction({
-          name: "use_machine",
-          data: {
-            machineID: machineID,
-            //plannedEndTime: Date()
-          },
-          complete: resp => {
-            console.log("use_machine returned:");
-            console.log(resp);
-          }
-        });
-      },
-      fail: resp => {
-        console.log("is_registered failed:");
-        console.log(resp);
+    oper.is_registered().then(resp => {
+      console.log("is_registered returned:");
+      console.log(resp);
+      if (!resp) {
+        console.log("Code fault: not registered");
         this.setData({
-          error: "Something unexpected happened! Please try again!"
+          error: "Something unexpected happened! Please re-enter the program!"
         });
       }
-    });
+      const machineID = resp.roomNumber.slice(0, 2) + "-" + cont.target.id;
+      console.log("Click on machine: ", machineID);
+      this.setData({
+        showForm: true
+      });
+      oper.get_my_laundries().then(resp => {
+        console.log(resp);
+        if (resp.length != 0) {
+          this.setData({
+            showCheckoutOptions: true
+          });
+        }
+      })
+    }).catch(resp => {
+      console.log("is_registered failed:");
+      console.log(resp);
+      this.setData({
+        error: "Something unexpected happened! Please try again!"
+      });
+    })
   }
 });
