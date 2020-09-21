@@ -17,43 +17,53 @@ Page({
       /* Boy side */
       {
         name: "w1",
-        location: ["-52vh", "-14vh"]
+        delta: "-38.5px",
+        location: ["-44vh", "-14vh"]
       },
       {
         name: "w2",
-        location: ["-61vh", "-14vh"]
+        delta: "-38.5px",
+        location: ["-53vh", "-14vh"]
       },
       {
         name: "d1",
-        location: ["-70vh", "-14vh"]
+        delta: "-38.5px",
+        location: ["-62vh", "-14vh"]
       },
       {
         name: "d2",
-        location: ["-79vh", "-14vh"]
+        delta: "-38.5px",
+        location: ["-71vh", "-14vh"]
       },
       {
         name: "w3",
-        location: ["-74vh", "6vh"]
+        delta: "-38.5px",
+        location: ["-67vh", "6vh"]
       },
       /* Girl side */
       {
         name: "w4",
+        delta: "0px",
         location: ["-8.5vh", "14vh"]
       },
       {
         name: "w5",
+        delta: "0px",
         location: ["-17.5vh", "14vh"]
       },
       {
         name: "d3",
+        delta: "0px",
         location: ["-26.5vh", "14vh"]
       },
       {
         name: "d4",
+        delta: "0px",
         location: ["-35.5vh", "14vh"]
       },
       {
         name: "w6",
+        delta: "0px",
         location: ["-30.5vh", "-6vh"]
       }
     ],
@@ -161,7 +171,7 @@ Page({
     console.log(e.detail);
   },
   
-  radioChange: function (e) {
+  purposeRadioChange: function (e) {
     console.log("Checkbox changed to:", e.detail.value);
 
     var radioItems = this.data.radioItems;

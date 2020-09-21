@@ -22,19 +22,21 @@
 		<view class="weui-form__title">{{title}}</view>
 		<view class="weui-form__desc">{{subtitle}}</view>
 	</view>
-	<button class="weui-btn" type="default" bindtap="showUD">Show Usage</button>
+	<view class="weui-btn-area weui-btn-area_compact">
+		<button class="weui-btn" type="default" bindtap="showUD">Show Usage</button>
+	</view>
 	<mp-cells title="Boys' side" class="base-image-container">
 		<image src="/images/boy-side-base.svg" class="base-image" />
 	</mp-cells>
 	<mp-cells title="Girls' side" class="base-image-container">
 		<image src="/images/girl-side-base.svg" class="base-image" />
 	</mp-cells>
-	<view class="machine-image-container" wx:for="{{machines}}" wx:key="item">
+	<view class="machine-image-container" wx:for="{{machines}}" wx:key="name">
 		<image
 		 class="machine-image"
 		 src="{{item.name[0]=='w'?'/images/washing-machine.svg':'/images/tumble-dryer.svg'}}"
 		 id="{{item.name}}"
-		 style="{{machineBaseCSS}}top:{{item.location[0]}};left:{{item.location[1]}};"
+		 style="{{machineBaseCSS}}top:calc(({{item.delta}}) + ({{item.location[0]}}));left:{{item.location[1]}};"
 		 bindtap="machineClick"
 		/>
 	</view>
@@ -47,10 +49,49 @@
 
 <mp-form-page title="{{title}}" subtitle="{{subtitle}}" wx:if="{{showForm}}">
 	<mp-form id="form" rules="{{rules}}" models="{{formData}}">
-            <mp-cells title="What's your purpose?">
-                <mp-checkbox-group prop="radio" multi="{{false}}" bindchange="radioChange">
-                    <mp-checkbox wx:for="{{purposeRadioItems}}" wx:key="value" label="{{item.name}}" value="{{item.value}}" checked="{{item.checked}}"></mp-checkbox>
-                </mp-checkbox-group>
-            </mp-cells>
+		<mp-cells title="What's your purpose?">
+			<mp-checkbox-group prop="radio" multi="{{false}}" bindchange="purposeRadioChange">
+				<mp-checkbox
+				 wx:for="{{purposeRadioItems}}"
+				 wx:key="value"
+				 label="{{item.name}}"
+				 value="{{item.value}}"
+				 checked="{{item.checked}}"
+				/>
+			</mp-checkbox-group>
+		</mp-cells>
+		<mp-cells title="Check out" wx:if="{{showCheckoutOptions}}">
+			<mp-checkbox-group prop="radio" multi="{{false}}" bindchange="checkoutRadioChange">
+				<mp-checkbox
+				 wx:for="{{checkoutRadioItems}}"
+				 wx:key="value"
+				 label="{{item.name}}"
+				 value="{{item.value}}"
+				 checked="{{item.checked}}"
+				/>
+			</mp-checkbox-group>
+		</mp-cells>
+		<view class="weui-btn-area" wx:if="{{showCheckoutOptions}}">
+			<button class="weui-btn" type="primary" bindtap="submitCheckoutForm">
+				<view class="weui-loading weui-loading" wx:if="{{showWait}}" />
+				Check out!</button>
+		</view>
+		<mp-cells title="The estimated time remaining">
+			<mp-cell prop="estimatedTime" title="Time" ext-class="">
+				<picker
+				 data-field="estimatedTime"
+				 mode="time"
+				 value="{{estimatedTime}}"
+				 bindchange="bindTimeChange"
+				>
+					<view class="weui-input">{{estimatedTime}}</view>
+				</picker>
+			</mp-cell>
+		</mp-cells>
+		<view class="weui-btn-area">
+			<button class="weui-btn" type="primary" bindtap="submitCheckinForm">
+				<view class="weui-loading weui-loading" wx:if="{{showWait}}" />
+				Check in!</button>
+		</view>
 	</mp-form>
 </mp-form-page>

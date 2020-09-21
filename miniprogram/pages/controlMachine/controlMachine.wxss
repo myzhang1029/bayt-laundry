@@ -18,3 +18,7 @@
   height: 35vh;
   width: 40vh;
 }
+
+.weui-btn-area_compact {
+  margin-top: 8px;
+}
