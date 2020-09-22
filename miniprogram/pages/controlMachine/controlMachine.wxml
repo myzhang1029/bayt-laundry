@@ -60,38 +60,57 @@
 				/>
 			</mp-checkbox-group>
 		</mp-cells>
-		<mp-cells title="Check out" wx:if="{{showCheckoutOptions}}">
-			<mp-checkbox-group prop="radio" multi="{{false}}" bindchange="checkoutRadioChange">
-				<mp-checkbox
-				 wx:for="{{checkoutRadioItems}}"
-				 wx:key="value"
-				 label="{{item.name}}"
-				 value="{{item.value}}"
-				 checked="{{item.checked}}"
-				/>
-			</mp-checkbox-group>
-		</mp-cells>
-		<view class="weui-btn-area" wx:if="{{showCheckoutOptions}}">
-			<button class="weui-btn" type="primary" bindtap="submitCheckoutForm">
-				<view class="weui-loading weui-loading" wx:if="{{showWait}}" />
-				Check out!</button>
+		<view wx:if="{{!showWhosUsing}}">
+			<mp-cells title="Check out" wx:if="{{showCheckoutOptions}}">
+				<mp-checkbox-group prop="radio" multi="{{false}}" bindchange="checkoutRadioChange">
+					<mp-checkbox
+					 wx:for="{{checkoutRadioItems}}"
+					 wx:key="value"
+					 label="{{item.name}}"
+					 value="{{item.value}}"
+					 checked="{{item.checked}}"
+					/>
+				</mp-checkbox-group>
+			</mp-cells>
+			<view class="weui-btn-area" wx:if="{{showCheckoutOptions}}">
+				<button class="weui-btn" type="primary" bindtap="submitCheckoutForm">
+					<view class="weui-loading weui-loading" wx:if="{{showWait}}" />
+					Check out!</button>
+			</view>
+			<mp-cells title="The estimated time remaining">
+				<mp-cell prop="estimatedTime" title="Time" ext-class="">
+					<picker
+					 data-field="estimatedTime"
+					 mode="time"
+					 value="{{estimatedTime}}"
+					 bindchange="bindTimeChange"
+					>
+						<view class="weui-input">{{estimatedTime}}</view>
+					</picker>
+				</mp-cell>
+			</mp-cells>
+			<view class="weui-btn-area">
+				<button class="weui-btn" type="primary" bindtap="submitCheckinForm">
+					<view class="weui-loading weui-loading" wx:if="{{showWait}}" />
+					Check in!</button>
+			</view>
 		</view>
-		<mp-cells title="The estimated time remaining">
-			<mp-cell prop="estimatedTime" title="Time" ext-class="">
-				<picker
-				 data-field="estimatedTime"
-				 mode="time"
-				 value="{{estimatedTime}}"
-				 bindchange="bindTimeChange"
-				>
-					<view class="weui-input">{{estimatedTime}}</view>
-				</picker>
-			</mp-cell>
-		</mp-cells>
-		<view class="weui-btn-area">
-			<button class="weui-btn" type="primary" bindtap="submitCheckinForm">
-				<view class="weui-loading weui-loading" wx:if="{{showWait}}" />
-				Check in!</button>
+		<view wx:if="{{showWhosUsing}}">
+			<mp-cells title="Message">
+				<mp-cell prop="qq" title="qq" ext-class="">
+					<input
+					 bindinput="formInputChange"
+					 data-field="qq"
+					 class="weui-input"
+					 placeholder="请输入qq"
+					/>
+				</mp-cell>
+			</mp-cells>
+			<view class="weui-btn-area">
+				<button class="weui-btn" type="primary" bindtap="submitCheckinForm">
+					<view class="weui-loading weui-loading" wx:if="{{showWait}}" />
+					Check in!</button>
+			</view>
 		</view>
 	</mp-form>
 </mp-form-page>

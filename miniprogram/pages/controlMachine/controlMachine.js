@@ -7,12 +7,17 @@ Page({
    * 页面的初始数据
    */
   data: {
+    /* Page info */
     title: "Machine Control",
     subtitle: "",
     usageString: "Click on the machine to see who is using it, check in your own usage or check out. Click \"Settings\" to review your settings.",
+    /* a half screen dialog about not doing laundry after midnight */
     showAfterMidnightNotice: false,
+    /* machine images use inlined style, so here are the common items */
     machineBaseCSS: "height:7vh;position:relative;z-index:2;",
+    /* showForm is false when the machine map is shown */
     showForm: false,
+    /* Machine icons */
     machines: [
       /* Boy side */
       {
@@ -67,16 +72,20 @@ Page({
         location: ["-30.5vh", "-6vh"]
       }
     ],
+    /* purpose: showWhosUsing is false when checkin/out tab is shown */
+    showWhosUsing: false,
     purposeRadioItems: [
       { name: "I want to check in/out my laundry", value: "0", checked: true },
       { name: "I want to see who is using the machine", value: "1" }
     ],
+    /* Usage Dialog */
     buttonsSUD: [{
       type: "primary",
       className: "",
       text: "OK",
       value: 1
     }],
+    /* After Midnight Notice */
     buttonsSAMN: [{
       type: "default",
       className: "",
@@ -170,18 +179,18 @@ Page({
   buttontap: function (e) {
     console.log(e.detail);
   },
-  
+
   purposeRadioChange: function (e) {
     console.log("Checkbox changed to:", e.detail.value);
 
-    var radioItems = this.data.radioItems;
+    var radioItems = this.data.purposeRadioItems;
     for (var i = 0, len = radioItems.length; i < len; ++i) {
       radioItems[i].checked = radioItems[i].value == e.detail.value;
     }
 
     this.setData({
-      radioItems: radioItems,
-      [`formData.radio`]: e.detail.value
+      purposeRadioItems: radioItems,
+      showWhosUsing: e.detail.value == 0 ? false : true
     });
   },
 
